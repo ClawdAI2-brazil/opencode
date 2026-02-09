@@ -70,7 +70,8 @@ export const DialogFork: Component = () => {
 
     sdk.client.session.fork({ sessionID, messageID: item.id }).then((forked) => {
       if (!forked.data) return
-      navigate(`/${base64Encode(sdk.directory)}/session/${forked.data.id}`)
+      const normalizedDirectory = sdk.directory.startsWith("/") ? sdk.directory.slice(1) : sdk.directory
+      navigate(`/${base64Encode(normalizedDirectory)}/session/${forked.data.id}`)
       requestAnimationFrame(() => {
         prompt.set(restored)
       })

@@ -197,7 +197,8 @@ export function createPromptSubmit(input: PromptSubmitInput) {
         })
       if (session) {
         layout.handoff.setTabs(base64Encode(sessionDirectory), session.id)
-        navigate(`/${base64Encode(sessionDirectory)}/session/${session.id}`)
+        const normalizedDirectory = sessionDirectory.startsWith("/") ? sessionDirectory.slice(1) : sessionDirectory
+        navigate(`/${base64Encode(normalizedDirectory)}/session/${session.id}`)
       }
     }
     if (!session) {
