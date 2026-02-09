@@ -354,7 +354,18 @@ export async function CodexAuthPlugin(input: PluginInput): Promise<Hooks> {
       provider: "openai",
       async loader(getAuth, provider) {
         const auth = await getAuth()
-        if (auth.type !== "oauth") return {}
+        
+        // Filter models to only allowed Codex models for API key auth
+        // gpt-5.3-codex is OAuth-only, so remove it for API key users
+        if (auth.type !== "oauth") {
+          const modelsToRemove = Object.keys(provider.models).filter(
+            (modelId) => modelId.includes("codex") && modelId !== "gpt-5.2-codex"
+          )
+          for (const modelId of modelsToRemove) {
+            delete provider.models[modelId]
+          }
+          return {}
+        }
 
         // Filter models to only allowed Codex models for OAuth
         const allowedModels = new Set([
